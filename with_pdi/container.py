@@ -7,7 +7,9 @@ class Container(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(
         packages=["with_pdi"],
     )
-    config = providers.Configuration(json_files=["./config.json"])
+    config = providers.Configuration(
+        json_files=["./config.json"]
+    )
     redis = providers.Singleton(
         Redis,
         host=config.redis_host,
@@ -19,10 +21,6 @@ class Container(containers.DeclarativeContainer):
         redis=redis,
     )
     service = providers.Factory(
-        service_layer.Service,
-        repository=repository,
-    )
-    singleton_service = providers.Singleton(
         service_layer.Service,
         repository=repository,
     )

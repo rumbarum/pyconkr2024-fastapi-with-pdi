@@ -4,29 +4,30 @@ from .repository import Repository
 from .service import Service
 import json
 
+setting = None
 def get_setting() -> dict:
-    with open("config.json") as f:
-        json_cong = json.load(f)
-    return json_cong
+    global setting
+    if setting is None:
+        with open("config.json") as f:
+            setting = json.load(f)
+    return setting
 
-setting = get_setting()
-
-def get_redis() -> Redis:
-    return Redis(
-        host=setting["redis_host"],
-        port=setting["redis_port"],
-        password=setting["redis_secret"],
-    )
+singleton_redis = None
+def get_redis(get_setting=get_setting) -> Redis:
+    setting = get_setting()
+    global singleton_redis
+    if singleton_redis is None:
+        singleton_redis = Redis(
+            host=setting["redis_host"],
+            port=setting["redis_port"],
+            password=setting["redis_secret"],
+        )
+    return singleton_redis
 
 def get_repository(get_redis=get_redis) -> Repository:
-    return Repository(redis=get_redis())
+    redis=get_redis()
+    return Repository(redis=redis)
 
 def get_service(get_repository=get_repository) -> Service:
-    return Service(repository=get_repository())
-
-global_service = None
-def get_singleton_service(get_repository=get_repository) -> Service:
-    global global_service
-    if global_service is None:
-        global_service = Service(repository=get_repository())
-    return global_service
+    repository = get_repository()
+    return Service(repository=repository)

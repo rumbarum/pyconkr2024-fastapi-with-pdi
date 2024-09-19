@@ -1,9 +1,7 @@
 """Tests module."""
 
 from unittest import mock
-
 import pytest
-
 from . import dependency
 
 
@@ -17,6 +15,19 @@ async def test_service():
     result = await service.get(test_key)
 
     assert result == test_value
+
+
+@pytest.mark.asyncio
+async def test_replace_repository_with_mock():
+    mocking = mock.AsyncMock()
+    mocking.set.return_value =  None
+    mocking.get.return_value = "mocked_value"
+
+    repository = dependency.Service(repository=mocking)
+
+    assert isinstance(repository._redis, mock.AsyncMock)
+    assert await repository.set("test_key", "test_value") == None
+    assert await repository.get("test_key") == "mocked_value"
 
 
 @pytest.mark.asyncio

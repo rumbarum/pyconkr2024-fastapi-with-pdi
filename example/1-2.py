@@ -1,6 +1,6 @@
 
 class Engine:
-    def get_power(self):
+    def get_power(self) -> int:
         ...
 
 # before
@@ -11,6 +11,7 @@ class Car:
     def drive(self):
         power = self.engine.get_power()
         # do something with power
+        ...
 
 car = Car()
 
@@ -21,8 +22,9 @@ class Car:
         self.engine = engine
 
     def drive(self):
-        self.engine.get_power()
+        power = self.engine.get_power()
         # do something with power
+        ...
 
 engine = Engine()
 car = Car(engine=engine)

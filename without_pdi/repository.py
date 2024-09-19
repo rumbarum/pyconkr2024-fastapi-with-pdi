@@ -1,6 +1,5 @@
 from redis.asyncio import Redis
 
-
 class Repository:
     def __init__(self, redis: Redis) -> None:
         self._redis = redis
