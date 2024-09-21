@@ -105,25 +105,38 @@ def make_high_price_oil_engine(get_oil: Callable = get_high_price_oil) -> Engine
 high_price_oil_engine_car = make_car(make_engine=make_high_price_oil_engine)
 
 # 또는 make_high_price_oil_car 함수 작성
-def make_high_price_oil_car(make_engine: Callable=make_high_price_oil_engine) -> Car:
-    engine = make_engine()
+def make_high_price_oil_car() -> Car:
+    engine = make_high_price_oil_engine()
     return Car(engine=engine)
 
 high_price_oil_engine_car = make_high_price_oil_car()
 
 
-
+# before
 car = Car(
     engine=DieselEngine(
         oil=Oil(price="high")
     )
 )
 
+# after
 car = Car(
     engine=DieselEngine(
         oil=Oil(price="high"), fuel_addition=FuelAddition(grade="premium")
     )
 )
+
+# add fuel addition to engine
+def get_base_grade_fuel_addition() -> FuelAddition:
+    return FuelAddition(grade="base")
+
+def make_engine(
+    get_oil: Callable = get_base_price_oil,
+    get_fuel_addition: Callable = get_base_grade_fuel_addition
+) -> Engine:
+    oil = get_oil()
+    fuel_addition = get_fuel_addition()
+    return Engine(oil=oil, fuel_addition=fuel_addition)
 
 
 

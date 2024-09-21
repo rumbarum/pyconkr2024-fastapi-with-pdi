@@ -23,11 +23,11 @@ async def test_replace_repository_with_mock():
     mocking.set.return_value =  None
     mocking.get.return_value = "mocked_value"
 
-    repository = dependency.Service(repository=mocking)
+    service = dependency.Service(repository=mocking)
 
-    assert isinstance(repository._redis, mock.AsyncMock)
-    assert await repository.set("test_key", "test_value") == None
-    assert await repository.get("test_key") == "mocked_value"
+    assert isinstance(service._repository, mock.AsyncMock)
+    assert await service.set("test_key", "test_value") == None
+    assert await service.get("test_key") == "mocked_value"
 
 
 @pytest.mark.asyncio
